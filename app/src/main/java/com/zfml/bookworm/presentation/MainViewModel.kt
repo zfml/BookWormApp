@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zfml.bookworm.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -14,5 +15,7 @@ class MainViewModel @Inject constructor(
        getAuthState()
     }
 
-    fun getAuthState() = authRepository.getAuthState(viewModelScope)
+    fun getAuthState() : StateFlow<Boolean>{
+      return  authRepository.getAuthState(viewModelScope)
+    }
 }

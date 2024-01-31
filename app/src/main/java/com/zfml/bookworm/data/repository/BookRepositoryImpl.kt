@@ -57,10 +57,10 @@ class BookRepositoryImpl(
            val downloadUrl = storage.reference.child(remoteImagePath)
                .putFile(imageUri).await()
                .storage.downloadUrl.await()
-            Response.Success(downloadUrl)
+           flow { emit(Response.Success(downloadUrl)) }
 
         }catch (e: Exception) {
-            Response.Failure(e)
+           flow { emit(Response.Failure(e)) }
         }
     }
 

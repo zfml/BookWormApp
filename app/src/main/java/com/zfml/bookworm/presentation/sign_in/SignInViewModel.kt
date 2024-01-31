@@ -29,7 +29,10 @@ class SignInViewModel @Inject constructor(
         when(val response = authRepository.signInWithEmailAndPassword(email, password)) {
             is Response.Failure -> {
                 _signInUiState.update {
-                    it.copy(error = response.e?.localizedMessage)
+                    it.copy(
+                        error = response.e?.localizedMessage,
+                        isLoading = false
+                    )
                 }
             }
 
@@ -40,7 +43,10 @@ class SignInViewModel @Inject constructor(
             }
             is Response.Success -> {
                 _signInUiState.update {
-                    it.copy(isSuccess = true)
+                    it.copy(
+                        isSuccess = true,
+                        isLoading = false
+                    )
                 }
             }
         }

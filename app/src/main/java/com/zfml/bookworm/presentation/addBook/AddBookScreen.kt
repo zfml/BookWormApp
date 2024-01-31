@@ -32,8 +32,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zfml.bookworm.component.DisplayAlertDialog
-import com.zfml.bookworm.component.Loading
 import com.zfml.bookworm.component.ProgressBar
 import com.zfml.bookworm.presentation.addBook.components.BoughtDateTextField
 import com.zfml.bookworm.presentation.addBook.components.UploadImageContent
@@ -45,7 +45,7 @@ fun AddBookScreen(
     navigateHomeScreen:() -> Unit
 ) {
 
-    val addBookUiState by viewModel.addBookUiState.collectAsState()
+    val addBookUiState by viewModel.addBookUiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
 
@@ -57,7 +57,10 @@ fun AddBookScreen(
               title = {
               Text(text = "Add Book") },
               navigationIcon = {
-                   IconButton(onClick = { navigateHomeScreen()}) {
+                   IconButton(
+                       onClick = { navigateHomeScreen()},
+                       enabled = !addBookUiState.isLoading
+                   ) {
                           Icon(
                               imageVector = Icons.Default.ArrowBack,
                               contentDescription = "Back Icon"
@@ -67,7 +70,10 @@ fun AddBookScreen(
               },
               actions = {
                   if(viewModel.currentBookId != "") {
-                      IconButton(onClick = { openDeleteDialog = true }) {
+                      IconButton(
+                          onClick = { openDeleteDialog = true },
+                          enabled = !addBookUiState.isLoading
+                      ) {
                           Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Icon")
                       }
                   }
@@ -142,7 +148,7 @@ fun AddBookScreen(
                             isLoading = addBookUiState.isLoading
                         )
 
-                    if(addBookUiState.isAddSuccessful) {
+                    if(addBookUiState.isSuccessful) {
                         navigateHomeScreen()
                     }
                 }

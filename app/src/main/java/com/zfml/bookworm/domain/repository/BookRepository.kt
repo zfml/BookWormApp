@@ -10,7 +10,7 @@ typealias BooksResponse = Response<Books>
 
 typealias GetBookResponse = Response<Book>
 
-typealias GetImageUrlFromFireStorage = Response<Uri>
+typealias GetImageUrlFromFireStorage = Flow<Response<Uri>>
 typealias AddImageUrlToFireStoreResponse = Response<Boolean>
 
 typealias AddBookToFireStoreResponse = Flow<Response<Boolean>>

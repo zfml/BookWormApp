@@ -31,6 +31,17 @@ fun SignInScreen(
 ) {
     val context = LocalContext.current
     val signInUiState by viewModel.signInUiState.collectAsState()
+
+    LaunchedEffect(key1 = signInUiState.error) {
+        if(signInUiState.error != "") {
+           Toast.makeText(
+               context,
+               signInUiState.error,
+               Toast.LENGTH_SHORT
+           ).show()
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

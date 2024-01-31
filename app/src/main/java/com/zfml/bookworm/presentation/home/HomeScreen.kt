@@ -47,6 +47,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -62,7 +63,7 @@ fun HomeScreen(
     navigateToAddBookScreen:() -> Unit,
     navigateToAddBookScreenWithArg: (bookId: String) -> Unit,
 ) {
-    val booksUiState by viewModel.booksUiState.collectAsState()
+    val booksUiState by viewModel.booksUiState.collectAsStateWithLifecycle()
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()

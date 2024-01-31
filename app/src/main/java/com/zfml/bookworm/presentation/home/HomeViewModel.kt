@@ -6,6 +6,7 @@ import com.zfml.bookworm.domain.model.Book
 import com.zfml.bookworm.domain.model.Response
 import com.zfml.bookworm.domain.repository.BookRepository
 import com.zfml.bookworm.domain.repository.BooksResponse
+import com.zfml.bookworm.domain.use_case.BookUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val bookRepository: BookRepository
+    private val bookRepository: BookRepository,
+    private val bookUseCases: BookUseCases,
 ): ViewModel() {
 
     private val _booksUiState = MutableStateFlow(BooksUiState())
@@ -38,7 +40,12 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getAllBooks() = viewModelScope.launch {
-        bookRepository.getBooksFromFireStore().collect{response ->
+        _booksUiState.update {
+            it.copy(
+                isLoading = true
+            )
+        }
+        bookUseCases.getAllBooks.invoke().collect{response ->
             when(response) {
                 is Response.Failure -> {
                     _booksUiState.update {
