@@ -40,6 +40,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getAllBooks() = viewModelScope.launch {
+
         _booksUiState.update {
             it.copy(
                 isLoading = true

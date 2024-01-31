@@ -41,12 +41,13 @@ class AddBookViewModel @Inject constructor(
 
     private fun getBook() {
 
-        _addBookUiState.update {
-            it.copy(
-                isLoading = true
-            )
-        }
+
         savedStateHandle.get<String>(ADD_BOOK_SCREEN_ARG_KEY)?.let {
+            _addBookUiState.update {
+                it.copy(
+                    isLoading = true
+                )
+            }
             viewModelScope.launch {
                 when (val getBookResponse = bookUseCases.getBook.invoke(it)) {
                     is Response.Failure -> {
