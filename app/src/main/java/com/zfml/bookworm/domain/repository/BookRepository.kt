@@ -3,6 +3,7 @@ package com.zfml.bookworm.domain.repository
 import android.net.Uri
 import com.zfml.bookworm.domain.model.Book
 import com.zfml.bookworm.domain.model.Response
+import com.zfml.bookworm.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
 typealias Books = List<Book>
@@ -37,7 +38,6 @@ interface BookRepository {
 
     suspend fun deleteImage(imageUri: String)
 
-    suspend fun signOut()
 
 
 

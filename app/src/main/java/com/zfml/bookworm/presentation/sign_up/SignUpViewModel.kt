@@ -22,7 +22,7 @@ class SignUpViewModel @Inject constructor(
 ): ViewModel() {
 
 
-    private val _signUpState = MutableStateFlow(SignInUiState())
+    private val _signUpState = MutableStateFlow(SignUpUiState())
     val signUpUiState = _signUpState.asStateFlow()
 
     fun signUpWithEmailAndPassword(email: String,password: String) {
@@ -31,7 +31,7 @@ class SignUpViewModel @Inject constructor(
                 is Response.Failure -> {
                     _signUpState.update {
                         it.copy(
-                            error = signUpResponse.e.toString(),
+                            errorMessage = signUpResponse.e.toString(),
                             isLoading = false
                         )
                     }

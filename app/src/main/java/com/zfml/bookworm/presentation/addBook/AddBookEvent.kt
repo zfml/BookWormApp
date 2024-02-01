@@ -6,5 +6,5 @@ sealed class AddBookEvent {
     data class BoughtDateChange(val date: Long): AddBookEvent()
     data class ImageChange(val imageUri: String): AddBookEvent()
     object Save: AddBookEvent()
-    object DeleteNote: AddBookEvent()
+    object DeleteBook: AddBookEvent()
 }

@@ -1,5 +1,6 @@
 package com.zfml.bookworm.presentation.addBook
 
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -41,11 +43,17 @@ import com.zfml.bookworm.presentation.addBook.components.UploadImageContent
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddBookScreen(
-    viewModel: AddBookViewModel = hiltViewModel(),
+    addBookUiState: AddBookUiState,
+    currentBookId: String,
+    onBookNameChanged:(String) -> Unit,
+    onAuthorNameChanged:(String) -> Unit,
+    onBoughtDateChanged: (Long) -> Unit,
+    onSelectedImageChanged:(String) -> Unit,
+    saveBook:() -> Unit,
+    deleteBook:() -> Unit,
     navigateHomeScreen:() -> Unit
 ) {
 
-    val addBookUiState by viewModel.addBookUiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
 
@@ -69,7 +77,7 @@ fun AddBookScreen(
 
               },
               actions = {
-                  if(viewModel.currentBookId != "") {
+                  if(currentBookId != "") {
                       IconButton(
                           onClick = { openDeleteDialog = true },
                           enabled = !addBookUiState.isLoading
@@ -96,7 +104,7 @@ fun AddBookScreen(
                         placeholder = "Book Name",
                         text = addBookUiState.bookName,
                         onTextChanged = {
-                            viewModel.onEvent(AddBookEvent.BookNameChange(it))
+                            onBookNameChanged(it)
                         },
                         isLoading = addBookUiState.isLoading
                     )
@@ -104,20 +112,20 @@ fun AddBookScreen(
                         placeholder = "Author Name",
                         text = addBookUiState.authorName,
                         onTextChanged = {
-                            viewModel.onEvent(AddBookEvent.AuthorNameChange(it))
+                           onAuthorNameChanged(it)
                         },
                         isLoading = addBookUiState.isLoading
                     )
 
                     BoughtDateTextField(
-                        boughtDate = {viewModel.onEvent(AddBookEvent.BoughtDateChange(it))},
+                        boughtDate = {onBoughtDateChanged(it)},
                         isLoading = addBookUiState.isLoading
                     )
 
                         UploadImageContent(
                             imageUri = addBookUiState.imageUri,
                             onSelectedImage = {
-                                viewModel.onEvent(AddBookEvent.ImageChange(it.toString()))
+                                onSelectedImageChanged(it.toString())
                             },
                             isLoading = addBookUiState.isLoading
                         )
@@ -139,21 +147,20 @@ fun AddBookScreen(
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     },
-                                    onSave = {
-                                        viewModel.onEvent(AddBookEvent.Save)
-                                    }
+                                    onSave = saveBook
                                 )
 
                             },
                             isLoading = addBookUiState.isLoading
                         )
 
-                    if(addBookUiState.isSuccessful) {
-                        navigateHomeScreen()
-                    }
+
                 }
                 if(addBookUiState.isLoading) {
                     ProgressBar()
+                }
+                if(addBookUiState.isSuccessful && !addBookUiState.isLoading) {
+                    navigateHomeScreen()
                 }
             }
 
@@ -169,7 +176,7 @@ fun AddBookScreen(
             openDialog = openDeleteDialog,
             onClosedDialog = { openDeleteDialog = false },
             onConfirmClicked = {
-                viewModel.onEvent(AddBookEvent.DeleteNote)
+                deleteBook()
                 openDeleteDialog = false
 
               },
@@ -256,4 +263,25 @@ fun CustomTextField(
         },
         enabled = !isLoading
     )
+}
+
+@Preview
+@Composable
+fun AddBookScreenPreview() {
+    AddBookScreen(
+        addBookUiState = AddBookUiState(
+            boughtDate = 1,
+            bookName = "The outsider",
+            authorName = "Albert Camus",
+            imageUri = ""
+        ) ,
+        currentBookId = "",
+        onBookNameChanged = {} ,
+        onAuthorNameChanged = {} ,
+        onBoughtDateChanged = {},
+        onSelectedImageChanged = {},
+        saveBook = { },
+        deleteBook = {  }) {
+
+    }
 }

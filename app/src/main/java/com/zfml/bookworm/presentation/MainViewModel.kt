@@ -14,7 +14,6 @@ class MainViewModel @Inject constructor(
     init {
        getAuthState()
     }
-
     fun getAuthState() : StateFlow<Boolean>{
       return  authRepository.getAuthState(viewModelScope)
     }

@@ -26,11 +26,11 @@ import com.zfml.bookworm.domain.model.Response
 
 @Composable
 fun SignInScreen(
-    viewModel: SignInViewModel = hiltViewModel(),
+    signInUiState: SignInUiState,
+    signInWithEmailAndPassword:(email: String,password:String) -> Unit,
     navigateToSignUp: () -> Unit
 ) {
     val context = LocalContext.current
-    val signInUiState by viewModel.signInUiState.collectAsState()
 
     LaunchedEffect(key1 = signInUiState.error) {
         if(signInUiState.error != "") {
@@ -63,7 +63,7 @@ fun SignInScreen(
 
         SignInContent(
             onSignIn = { email, password ->
-                viewModel.signInWithEmailAndPassword(email, password)
+                signInWithEmailAndPassword(email, password)
             },
             navigateToSignUp = navigateToSignUp
         )
@@ -85,5 +85,11 @@ fun SignInScreen(
 @Preview
 @Composable
 fun SignInPreview() {
-
+    SignInScreen(
+        signInUiState = SignInUiState(isLoading = true, isSuccess = false),
+        signInWithEmailAndPassword = { email, password ->  
+                                     
+        },
+        navigateToSignUp = {}
+    )
 }

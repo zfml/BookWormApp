@@ -8,16 +8,19 @@ import com.zfml.bookworm.domain.repository.AuthRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class AuthRepositoryImpl (
+@Singleton
+class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth
 ): AuthRepository {
     override val currentUser: FirebaseUser? get() = auth.currentUser
+    override val displayName = auth.currentUser?.displayName.toString()
+    override val photoUrl = auth.currentUser?.photoUrl.toString()
 
     override suspend fun signUpWithEmailAndPassword(
         email: String,

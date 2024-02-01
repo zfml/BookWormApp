@@ -1,6 +1,5 @@
 package com.zfml.bookworm.presentation.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +15,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,7 +31,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,27 +40,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import com.zfml.bookworm.R
 import com.zfml.bookworm.component.DisplayAlertDialog
 import com.zfml.bookworm.component.ProgressBar
+import com.zfml.bookworm.domain.model.Book
+import com.zfml.bookworm.domain.model.User
+import com.zfml.bookworm.navigation.Screen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel(),
+    booksUiState: BooksUiState,
+    signOut: () -> Unit,
     navigateToAddBookScreen:() -> Unit,
     navigateToAddBookScreenWithArg: (bookId: String) -> Unit,
 ) {
-    val booksUiState by viewModel.booksUiState.collectAsStateWithLifecycle()
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -138,7 +135,7 @@ fun HomeScreen(
             openDialog = openSignOutDialog ,
             onClosedDialog = { openSignOutDialog = false },
             onConfirmClicked = {
-                     viewModel.signOut()
+                     signOut()
                      openSignOutDialog = false
             },
             onDismissClicked = { openSignOutDialog = false }
@@ -213,5 +210,26 @@ fun NavigationDrawer(
         },
         content = content
     )
+}
 
+@Preview
+@Composable
+fun HomeScreenPreview() {
+    HomeScreen(
+        booksUiState = BooksUiState(
+            user = User(),
+            books = listOf(
+                Book(
+                    id = "123",
+                    bookCover = "",
+                    name = "The Outsider",
+                    author = "Albert Camus",
+                    dateBought = 2
+                )
+            )
+        ),
+        signOut = {},
+        navigateToAddBookScreen = {  },
+        navigateToAddBookScreenWithArg = {}
+    )
 }

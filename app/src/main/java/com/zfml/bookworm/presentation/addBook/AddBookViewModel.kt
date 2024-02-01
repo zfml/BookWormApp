@@ -3,14 +3,12 @@ package com.zfml.bookworm.presentation.addBook
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zfml.bookworm.core.Constants.ADD_BOOK_SCREEN_ARG_KEY
 import com.zfml.bookworm.domain.model.Book
 import com.zfml.bookworm.domain.model.Response
-import com.zfml.bookworm.domain.repository.BookRepository
 import com.zfml.bookworm.domain.use_case.BookUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,7 +38,6 @@ class AddBookViewModel @Inject constructor(
 
 
     private fun getBook() {
-
 
         savedStateHandle.get<String>(ADD_BOOK_SCREEN_ARG_KEY)?.let {
             _addBookUiState.update {
@@ -131,7 +128,7 @@ class AddBookViewModel @Inject constructor(
             }
         }
 
-        AddBookEvent.DeleteNote -> {
+        AddBookEvent.DeleteBook -> {
             deleteBookFromFirebase()
         }
     }

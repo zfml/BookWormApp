@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -22,18 +23,18 @@ import com.zfml.bookworm.component.Loading
 
 @Composable
 fun SignUpScreen(
-    viewModel: SignUpViewModel = hiltViewModel(),
+    signUpUiState: SignUpUiState,
+    signUpWithEmailAndPassword:(email:String,password: String) -> Unit,
     navigateToSignIn: () -> Unit
 ){
 
-    val signUpUiState by viewModel.signUpUiState.collectAsStateWithLifecycle()
 
     val context  = LocalContext.current
-    LaunchedEffect(key1 = signUpUiState.error) {
-        if(signUpUiState.error != "") {
+    LaunchedEffect(key1 = signUpUiState.errorMessage) {
+        if(signUpUiState.errorMessage != "") {
             Toast.makeText(
                 context,
-                signUpUiState.error,
+                signUpUiState.errorMessage,
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -57,7 +58,7 @@ fun SignUpScreen(
         )
         SignUpContent(
             onSignUp = { email, password ->
-                viewModel.signUpWithEmailAndPassword(email, password)
+                signUpWithEmailAndPassword(email, password)
             },
             navigateToSignIn = navigateToSignIn
         )
@@ -65,6 +66,16 @@ fun SignUpScreen(
             Loading()
         }
     }
+}
 
+@Preview
+@Composable
+fun SignUpScreenPreview() {
+    SignUpScreen(
+        signUpUiState = SignUpUiState(isSuccess = false, isLoading = true),
+        signUpWithEmailAndPassword = { email, password ->
 
+        },
+        navigateToSignIn = {}
+    )
 }

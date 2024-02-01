@@ -20,8 +20,11 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class BookRepositoryImpl(
+@Singleton
+class BookRepositoryImpl @Inject constructor(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
     private val storage: FirebaseStorage
@@ -51,6 +54,8 @@ class BookRepositoryImpl(
 
     }
     override suspend fun getImageUrlFromFireStorage(imageUri: Uri): GetImageUrlFromFireStorage {
+
+
         return try {
             val userId = auth.currentUser!!.uid
             val remoteImagePath = "images/${userId}/${imageUri.lastPathSegment}-${System.currentTimeMillis()}"
@@ -127,9 +132,6 @@ class BookRepositoryImpl(
         storage.reference.child("images/${userId}/$imageName").delete().await()
     }
 
-    override suspend fun signOut() {
-        auth.signOut()
-    }
 
     override suspend fun addImageUrlToFireStore(downloadUrl: Uri): AddImageUrlToFireStoreResponse {
         TODO("Not yet implemented")

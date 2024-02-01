@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zfml.bookworm.domain.model.Book
 import com.zfml.bookworm.domain.model.Response
+import com.zfml.bookworm.domain.model.User
+import com.zfml.bookworm.domain.repository.AuthRepository
 import com.zfml.bookworm.domain.repository.BookRepository
 import com.zfml.bookworm.domain.repository.BooksResponse
 import com.zfml.bookworm.domain.use_case.BookUseCases
@@ -11,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -20,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val bookRepository: BookRepository,
+    private val authRepository: AuthRepository,
     private val bookUseCases: BookUseCases,
 ): ViewModel() {
 
@@ -28,15 +31,18 @@ class HomeViewModel @Inject constructor(
     val booksUiState = _booksUiState.asStateFlow()
 
 
-    fun signOut() {
-        viewModelScope.launch {
-            bookRepository.signOut()
-        }
-    }
-
+    val getDisplayName = authRepository.displayName
+    val photoUrl = authRepository.photoUrl
 
     init {
         getAllBooks()
+    }
+
+
+    fun signOut() {
+        viewModelScope.launch {
+            authRepository.signOut()
+        }
     }
 
     private fun getAllBooks() = viewModelScope.launch {
@@ -75,6 +81,7 @@ class HomeViewModel @Inject constructor(
 }
 
 data class BooksUiState(
+    val user: User = User(),
     val books : List<Book> = emptyList(),
     val isLoading: Boolean = true,
     val errorMessage: String = ""
